@@ -1,0 +1,104 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selection</title>
+    <script>
+        window.onload = function () {
+            // Select all
+            const hobbies = document.getElementsByName("hobby")
+            const allBtn = document.getElementById("all")
+            const checkAllBox = document.getElementById("check-all")
+
+            allBtn.onclick = function () {
+                for (i = 0; i < hobbies.length; i++) {
+                    hobbies[i].checked = true
+                }
+                checkAllBox.checked = true
+            }
+            // Cancel all
+            const cancelBtn = document.getElementById("no")
+            cancelBtn.onclick = function () {
+                for (i = 0; i < hobbies.length; i++) {
+                    hobbies[i].checked = false
+                }
+                checkAllBox.checked = false
+
+            }
+
+            // Invert
+            const invertBtn = document.getElementById("reverse")
+            invertBtn.onclick = function () {
+                for (i = 0; i < hobbies.length; i++) {
+                    hobbies[i].checked = !hobbies[i].checked
+                }
+                const checkedBox = document.querySelectorAll("[name=hobby]:checked") //伪类选择器
+
+                // decide if hobbies are all selected 
+                if (hobbies.length === checkedBox.length) {
+                    checkAllBox.checked = true
+                } else {
+                    checkAllBox.checked = false
+                }
+            }
+
+            // Submit
+            const subBtn = document.getElementById("submit")
+            subBtn.onclick = function () {
+                for (i = 0; i < hobbies.length; i++) {
+                    // if(hobbies[i].checked){
+                    //     alert(hobbies[i].value)
+                    hobbies[i].checked && alert(hobbies[i].value)
+                }
+            }
+
+            // check-all to control items
+
+            checkAllBox.onchange = function () {
+                for (i = 0; i < hobbies.length; i++) {
+                    hobbies[i].checked = this.checked
+                }
+            }
+            for (let i = 0; i < hobbies.length; i++) {
+                hobbies[i].onchange = function () {
+                    const checkedBox = document.querySelectorAll("[name=hobby]:checked") //伪类选择器
+
+                    // decide if hobbies are all selected 
+                    if (hobbies.length === checkedBox.length) {
+                        checkAllBox.checked = true
+                    } else {
+                        checkAllBox.checked = false
+                    }
+                }
+
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div>
+        <div>
+            <form action="#">
+                Please make selection:
+                <input type="checkbox" id="check-all">Select All
+        </div>
+        <div>
+            <input type="checkbox" name="hobby" value="pingpang"> Ping Pang
+            <input type="checkbox" name="hobby" value="basketball">Basketball
+            <input type="checkbox" name="hobby" value="bedminton">Bedminton
+            <input type="checkbox" name="hobby" value="football">Football
+        </div>
+        <div>
+            <button type="button" id="all">Select All</button>
+            <button type="button" id="no">Cancel</button>
+            <button type="button" id="reverse">Invert Selection</button>
+            <button type="button" id="submit">Submit</button>
+        </div>
+        </form>
+    </div>
+</body>
+
+</html>

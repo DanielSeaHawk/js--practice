@@ -1,0 +1,75 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carousel</title>
+    <style>
+      .outer {
+        margin: 50px auto;
+        text-align: center;
+      }
+      img {
+        width: 300px;
+        height: 380px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="outer">
+      <p id="info">X, total X pictures</p>
+      <div class="img-wrapper">
+        <img src="./pic1.png" alt="manunited" />
+      </div>
+      <div class="btn-wrapper">
+        <button id="prev">Previous</button>
+        <button id="autoBtn">Auto Shift</button>
+        <button id="next">Next</button>
+      </div>
+    </div>
+    <script>
+      const img = document.getElementsByTagName("img")[0];
+      const prev = document.getElementById("prev");
+      const next = document.getElementById("next");
+      const info = document.getElementById("info");
+
+      const imgarr = ["./pic1.png", "./pic2.png", "./pic3.png"];
+
+      let current = 0;
+
+      let timer;
+      // Auto shift
+      const autoBtn = document.getElementById("autoBtn");
+      autoBtn.onclick = () => {
+        clearTimeout(timer);
+        timer = setTimeout((auto) => {
+          next.onclick();
+          timer = setTimeout(auto, 3000);
+        }, 2000);
+      };
+
+      info.textContent = `${current + 1}, total ${imgarr.length} pictures`;
+
+      next.onclick = function () {
+        current++;
+        if (current > imgarr.length - 1) {
+          current = 0;
+        }
+
+        img.src = imgarr[current];
+
+        info.textContent = `${current + 1}, total ${imgarr.length} pictures`;
+      };
+
+      prev.onclick = function () {
+        current--;
+        if (current < 0) {
+          current = imgarr.length - 1;
+        }
+        img.src = imgarr[current];
+
+        info.textContent = `${current + 1}, total ${imgarr.length} pictures`;
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,152 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deletion</title>
+    <style>
+      .outer {
+        width: 400px;
+        margin: 100px auto;
+        text-align: center;
+      }
+      table {
+        width: 400px;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      td,
+      th {
+        border: 1px black solid;
+        padding: 10px 10px;
+        text-align: center;
+      }
+      form div {
+        margin: 10px 0;
+      }
+      label {
+        width: 50px;
+        display: inline-block;
+        text-align: right;
+      }
+    </style>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function deletHandler() {
+          const tr = this.parentNode.parentNode;
+
+          // const fstName = tr.getElementsByTagName("td")[0].textContent
+          const fstName = tr.firstElementChild.textContent;
+          if (confirm("Do you want to delete " + fstName + "?")) {
+            tr.remove();
+          }
+          return false; //取消默认行为，取消跳转
+        }
+
+        const links = document.links;
+        for (let i = 0; i < links.length; i++) {
+          links[i].onclick = deletHandler;
+        }
+        // document.addEventListener("click",event=>{
+          
+        //     if([...links].includes(event.target)){
+        //    links[i].onclick=deletHandler;
+        //   }
+          
+        // })
+
+        const tbody = document.querySelector("tbody");
+        const btn = document.getElementById("btn");
+        btn.onclick = function () {
+          const name = document.getElementById("name").value;
+          const email = document.getElementById("email").value;
+          const age = document.getElementById("age").value;
+
+          //Easily get attacked by xss:
+          //   tbody.insertAdjacentHTML(
+          //     "beforeend",
+          //     `<tr>
+          //       <td>${name}</td>
+          //       <td>${email}</td>
+          //       <td>${age}</td>
+          //       <td>
+          //         <a href="#">Delete</a>
+          //       </td>
+          //     </tr>`
+          //   );
+
+          const tr = document.createElement("tr");
+
+          const nameTd = document.createElement("td");
+          const emailTd = document.createElement("td");
+          const ageTd = document.createElement("td");
+
+          nameTd.textContent = name;
+          emailTd.textContent = email;
+          ageTd.textContent = age;
+
+          tr.appendChild(nameTd);
+
+          tr.appendChild(emailTd);
+
+          tr.appendChild(ageTd);
+
+          tr.insertAdjacentHTML("beforeend", '<td><a href="#">Delete</a></td>');
+          tbody.appendChild(tr);
+
+          links[links.length - 1].onclick = deletHandler;
+          return false; //or add type = button to <button>
+
+        };//如何清除提交后的表单？
+        
+      });
+    </script>
+  </head>
+  <body>
+    <div class="outer">
+      <table>
+        <tbody>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Age</th>
+            <th>Option</th>
+          </tr>
+          <tr>
+            <td>Tim</td>
+            <td>tim@abc.com</td>
+            <td>20</td>
+            <td><a href="#">Delete</a></td>
+          </tr>
+          <tr>
+            <td>Jerry</td>
+            <td>jerry@abc.com</td>
+            <td>22</td>
+            <td><a href="#">Delete</a></td>
+          </tr>
+          <tr>
+            <td>Dave</td>
+            <td>Dave@abc.com</td>
+            <td>26</td>
+            <td><a href="#">Delete</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <form action="#">
+        <p>
+          <label for="name">Name:</label>
+          <input type="text" id="name" />
+        </p>
+        <p>
+          <label for="email">Email:</label>
+          <input type="email" id="email" />
+        </p>
+        <p>
+          <label for="age">Age:</label>
+          <input type="number" id="age" />
+        </p>
+        <button id="btn">Add</button>
+      </form>
+    </div>
+  </body>
+</html>

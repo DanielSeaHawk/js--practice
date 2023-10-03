@@ -1,0 +1,179 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Snake</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      #main {
+        height: 420px;
+        width: 360px;
+        border: 10px #000 solid;
+        background-color: aqua;
+        border-radius: 20px;
+        margin: 50px auto;
+      }
+      #stage {
+        width: 304px;
+        height: 304px;
+        border: 2px #000 solid;
+        margin: 20px auto;
+        position: relative;
+      }
+      #snake > div {
+        width: 10px;
+        height: 10px;
+        background-color: #000;
+        position: absolute;
+        border: 1px solid aqua;
+      }
+      #food {
+        width: 10px;
+        height: 10px;
+        background-color: #000;
+        position: absolute;
+        top: 100px;
+        left: 120px;
+      }
+      #info {
+        width: 304px;
+        margin: 20 auto;
+        display: flex;
+        justify-content: space-between;
+        font: bold 20px courier;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="main">
+      <div id="stage">
+        <div id="snake">
+          <div></div>
+        </div>
+        <div id="food"></div>
+      </div>
+      <div id="info">
+        <div>SCORE: <span id="score">0</span></div>
+        <div>LEVEL: <span id="level">1</span></div>
+      </div>
+    </div>
+
+    <script>
+      //Snake
+      const snake = document.getElementById("snake");
+      //snake body
+      const snakes = snake.getElementsByTagName("div");
+
+      //Get food
+      const food = document.getElementById("food");
+      //get score & level
+      const scoreSpan = document.getElementById("score");
+      const levelSpan = document.getElementById("level");
+
+      let score = 0;
+      let level = 1;
+      //Coordinates of food betwee o-290px, times of 10px, randomly
+      function changeFood() {
+        //generate coordinates 0 - 29
+        const x = Math.floor(Math.random() * 30) * 10;
+        const y = Math.floor(Math.random() * 30) * 10;
+
+        //coordinates of food
+        food.style.left = x + "px";
+        food.style.top = y + "px";
+      }
+      changeFood();
+      //Limit keys(⬆️⬇️⬅️➡️)
+      const keyArr = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+      //forbid turnaround
+      //bond keydown
+      let dir;
+      //prevent quickly press keys to make snake turnaround
+      let keyActive = true;
+      //make an object to simple If func if it turns around
+      const reObj = {
+        ArrowUp: "ArrowDown",
+        ArrowDown: "ArrowUp",
+        ArrowLeft: "ArrowRight",
+        ArrowRight: "ArrowLeft",
+      };
+      document.addEventListener("keydown", (event) => {
+        if (keyActive && keyArr.includes(event.key))
+          if (snakes.length < 2 || reObj[dir] != event.key) {
+            //if it turns around
+            //forbid turnaround
+            //Keep it moving
+            dir = event.key;
+            keyActive = false;
+          }
+      });
+
+      setTimeout(function move() {
+        //snake head
+        const head = snakes[0];
+        let x = head.offsetLeft;
+        let y = head.offsetTop;
+
+        switch (dir) {
+          case "ArrowUp":
+            y -= 10;
+            break;
+          case "ArrowDown":
+            y += 10;
+            break;
+          case "ArrowLeft":
+            x -= 10;
+            break;
+          case "ArrowRight":
+            x += 10;
+            break;
+        }
+        //body movement. (move the tail to the front)
+
+        //If snake reaches food
+        if (
+          head.offsetTop === food.offsetTop &&
+          head.offsetLeft === food.offsetLeft
+        ) {
+          changeFood();
+          //increse snake's body length
+          snake.insertAdjacentHTML("beforeend", "<div/>");
+          score++;
+          scoreSpan.textContent = score;
+
+          //check the level. every 2 foods equal 1 level
+          if (score % 2 === 0 && level <14) {
+            level++;
+            levelSpan.textContent = level + 1;
+          }
+        }
+        //game ends: a. tail(head) touches body b. tail(head) touches walls
+        //a
+        if (x < 0 || x > 290 || y < 0 || y > 290) {
+          alert("Game Over!");
+          return;
+        }
+        //b
+        for (let i = 0; i < snakes.length - 1; i++) {
+          if (snakes[i].offsetLeft === x && snakes[i] === y) {
+            alert("Game Over!");
+            return;
+          }
+        }
+        //get tail coordinates
+        const tail = snakes[snakes.length - 1];
+        //tail movement
+        tail.style.left = x + "px";
+        tail.style.top = y + "px";
+        //put tail in head's position
+        snake.insertAdjacentElement("afterbegin", tail);
+        keyActive = true;
+        setTimeout(move, 300 - level * 20);
+      }, 300);
+    </script>
+  </body>
+</html>
